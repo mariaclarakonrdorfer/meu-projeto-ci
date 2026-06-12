@@ -1,10 +1,12 @@
 import os
 
+
 def somar(a, b):
-return a + b
+    return a + b
+
 
 def conectar_api():
-    # Simulando o consumo de um Secret injetado em memória
+    # Simulando o consumo de um Secret injetado em memoria
     token = os.environ.get("MINHA_API_SECRET")
     if not token:
         raise ValueError("ERRO DE SEGURANÇA: Token não encontrado!")
