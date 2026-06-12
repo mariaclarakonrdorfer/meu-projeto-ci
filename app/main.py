@@ -1,7 +1,7 @@
 import os
 
 def somar(a, b):
-    return a + b
+return a + b
 
 def conectar_api():
     # Simulando o consumo de um Secret injetado em memória
