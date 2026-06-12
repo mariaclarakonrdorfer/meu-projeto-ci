@@ -1,0 +1,34 @@
+name: Pipeline de Integração Contínua (CI)
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validacao-codigo:
+    name: Executar Testes e Linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o Código (Checkout)
+        uses: actions/checkout@v4
+
+      - name: Configurar o Ambiente Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Instalar Dependências do Projeto
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validar Estilo de Código (Flake8 Linter)
+        run: flake8 .
+
+      - name: Executar Testes Automatizados (PyTest)
+        env:
+          MINHA_API_SECRET: ${{ secrets.MINHA_API_SECRET }}
+        run: pytest
