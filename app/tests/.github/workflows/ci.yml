@@ -1,0 +1,40 @@
+name: Pipeline de Integração Contínua (CI)
+
+# Meta 1: Gatilhos Inteligentes (Trigger direcionado a Pull Requests para proteger a main)
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validacao-codigo:
+    name: Executar Testes e Linters
+    runs-on: ubuntu-latest # Utilizando o Runner padrão Hosted pelo GitHub
+
+    steps:
+      # Passo Inicial: Clonar o repositório atual para dentro do container do Runner
+      - name: Baixar o Código (Checkout)
+        uses: actions/checkout@v4
+
+      # Meta 2: Setup do Ambiente Virtualizado
+      - name: Configurar o Ambiente Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip' # Otimização de cache para acelerar execuções futuras
+
+      - name: Instalar Dependências do Projeto
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Meta 3: Execução do Linter (Garantir qualidade estática do código)
+      - name: Validar Estilo de Código (Flake8 Linter)
+        run: flake8 .
+
+      # Meta 4: Injetando Segredos com segurança na execução dos testes
+      - name: Executar Testes Automatizados (PyTest)
+        env:
+          # Capturando os valores mapeados no repositório de forma invisível via memória
+          MINHA_API_SECRET: ${{ secrets.MINHA_API_SECRET }}
+        run: pytest
